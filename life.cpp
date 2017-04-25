@@ -71,3 +71,5 @@ void SetInitialDish(ifstream &in){     //Why can't I pass in a Grid as a paramet
 
 
 }
+
+/////這邊加了一行
