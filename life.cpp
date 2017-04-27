@@ -16,7 +16,7 @@
 #include "lifegui.h"
 using namespace std;
 
-Grid<char> SetInitialDish (ifstream &in);
+Grid<char> SetInitialDish (ifstream &in, Grid <char> &InitialDish);
 void SetPattern(Grid <char> &InitialDish);
 
 
@@ -38,15 +38,18 @@ int main() {
     }
 
     //Set up initial dish
-    cout << SetInitialDish(in) << endl;
+    Grid <char> InitialDish;
+    cout << SetInitialDish(in, InitialDish) << endl;
+
+    //Define how the pattern according to which it moves
     SetPattern(InitialDish);
 
     return 0;
 }
 
-Grid<char> SetInitialDish (ifstream &in){
+Grid<char> SetInitialDish (ifstream &in, Grid <char> &InitialDish){
 
-    Grid <char> InitialDish;
+
 
     string temp;
     int a;
@@ -95,57 +98,73 @@ Grid<char> SetInitialDish (ifstream &in){
 void SetPattern(Grid <char> &InitialDish){
 
     Grid <char> TempGrid;
-    TempGrid.resize(5,5); //Replace with a, b
+    TempGrid.resize(InitialDish.numRows(), InitialDish.numCols());
 
     //0 or 1 neighbors
 
-    for (int row = 0; row < InitialDish.numRows(); row ++){
-        for (int col = 0; col < InitialDish.numCols(); col ++){
+    for (int row = 1; row < (InitialDish.numRows() - 1); row ++){
+        for (int col = 1; col < (InitialDish.numCols() - 1); col ++){
 
-            for (int r = 0; r < 3; r++){
+            //這裡有問題，為什麼有兩個 NumOfNeighbors
+            int NumOfNeighbors;
 
-                for (int c = 0; c < 3; c++){
+            if (InitialDish[row][col] == 'X'){
+                int NumOfNeighbors = -1;
 
-                    int NumOfNeighbors = 0;
+            } else {
+                int NumOfNeighbors = 0;
+            }
 
-                    if (InitialDish[row + (r-1)][col + (c-1)] == 'X'){
+            for (int r = -1; r < 2; r++){
+
+                for (int c = -1; c < 2; c++){
+
+                    //Check Boundary
+                    //if (InitialDish.inBounds((row + r), (col + c))){
+
+                    if (InitialDish[row +r][col + c] == 'X'){
 
                         NumOfNeighbors ++;
-                        NumOfNeighbors -= 1;
                     }
-                    if (NumOfNeighbors = 1 || 2){
-                        //Zero or one neighbors, empty in the next generation
-                        TempGrid.set(row, col, '-');
-
-                    }
-
-                    if (NumOfNeighbors = 3){
-                        //Two neighbors, stable
-                        if (InitialDish[row][col] == '-'){
-                            TempGrid.set(row, col, '-');
-                        }
-                        if (InitialDish[row][col] == 'X'){
-
-                            TempGrid.set(row, col, 'X');
-                        }
-                    }
-
-                    if (NumOfNeighbors = 4){
-                        TempGrid.set(row, col, 'X');
-                    }
-
-                    if (NumOfNeighbors > 4){
-                        TempGrid.set(row, col, '-');
-                    }
-
-
-
-
-
                 }
             }
+
+            //Insert here
+            if (NumOfNeighbors == 0 || NumOfNeighbors == 1){
+                //Zero or one neighbors, empty in the next generation
+                TempGrid.set(row, col, '-');
+
+            }
+
+            if (NumOfNeighbors == 2){
+                //Two neighbors, stable
+                if (InitialDish[row][col] == '-'){
+                    TempGrid.set(row, col, '-');
+                }
+                if (InitialDish[row][col] == 'X'){
+
+                    TempGrid.set(row, col, 'X');
+                }
+            }
+
+            if (NumOfNeighbors == 3){
+                TempGrid.set(row, col, 'X');
+            }
+
+            if (NumOfNeighbors > 3){
+                TempGrid.set(row, col, '-');
+            }
+
+            else {
+
+                TempGrid.set(row, col, '-');
+            }
         }
+        // }
 
     }
+
+
+    cout << TempGrid << endl;
 
 }
