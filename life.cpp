@@ -102,17 +102,17 @@ void SetPattern(Grid <char> &InitialDish){
 
     //0 or 1 neighbors
 
-    for (int row = 1; row < (InitialDish.numRows() - 1); row ++){
-        for (int col = 1; col < (InitialDish.numCols() - 1); col ++){
+    for (int row = 0; row < (InitialDish.numRows() - 1); row ++){
+        for (int col = 0; col < (InitialDish.numCols() - 1); col ++){
 
             //這裡有問題，為什麼有兩個 NumOfNeighbors
             int NumOfNeighbors;
 
             if (InitialDish[row][col] == 'X'){
-                int NumOfNeighbors = -1;
+                NumOfNeighbors = -1;
 
             } else {
-                int NumOfNeighbors = 0;
+                NumOfNeighbors = 0;
             }
 
             for (int r = -1; r < 2; r++){
@@ -122,7 +122,8 @@ void SetPattern(Grid <char> &InitialDish){
                     //Check Boundary
                     //if (InitialDish.inBounds((row + r), (col + c))){
 
-                    if (InitialDish[row +r][col + c] == 'X'){
+                    if (InitialDish.inBounds((row + r), (col + c)) &&
+                            InitialDish[row +r][col + c] == 'X'){
 
                         NumOfNeighbors ++;
                     }
@@ -136,22 +137,16 @@ void SetPattern(Grid <char> &InitialDish){
 
             }
 
-            if (NumOfNeighbors == 2){
+            else if (NumOfNeighbors == 2){
                 //Two neighbors, stable
-                if (InitialDish[row][col] == '-'){
-                    TempGrid.set(row, col, '-');
-                }
-                if (InitialDish[row][col] == 'X'){
-
-                    TempGrid.set(row, col, 'X');
-                }
+                TempGrid.set(row, col, InitialDish[row][col]);
             }
 
-            if (NumOfNeighbors == 3){
+            else if (NumOfNeighbors == 3){
                 TempGrid.set(row, col, 'X');
             }
 
-            if (NumOfNeighbors > 3){
+            else if (NumOfNeighbors > 3){
                 TempGrid.set(row, col, '-');
             }
 
@@ -161,7 +156,6 @@ void SetPattern(Grid <char> &InitialDish){
             }
         }
         // }
-
     }
 
 
