@@ -39,7 +39,10 @@ int main() {
 
     //Set up initial dish
     Grid <char> InitialDish;
-    cout << SetInitialDish(in, InitialDish) << endl;
+
+    //Print the grid in a prettier way
+
+    cout << SetInitialDish(in,  InitialDish) << endl;
 
     //Define how the pattern according to which it moves
     SetPattern(InitialDish);
@@ -159,6 +162,6 @@ void SetPattern(Grid <char> &InitialDish){
     }
 
 
-    cout << TempGrid << endl;
+    InitialDish =TempGrid;
 
 }
