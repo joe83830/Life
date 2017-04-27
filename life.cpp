@@ -16,60 +16,136 @@
 #include "lifegui.h"
 using namespace std;
 
-void SetInitialDish(ifstream &in);
-int CountLines(ifstream &in);
+Grid<char> SetInitialDish (ifstream &in);
+void SetPattern(Grid <char> &InitialDish);
+
 
 int main() {
-
-//Open the file
 
     ifstream in;
 
     string s = getLine("Enter initial file name: ");
     in.open(s);
 
-//Test if the file opens successfully
+    if (in.is_open()){
+
+        cout << "The file has successfully been opened." << endl;
+    }
 
     if (in.fail()){
 
         cerr << "Failed to open file";
     }
 
-    cout << "NumLines = " << CountLines(in);
-
-//Stuff the info in the file into a Grid
-    SetInitialDish(in);
+    //Set up initial dish
+    cout << SetInitialDish(in) << endl;
+    SetPattern(InitialDish);
 
     return 0;
 }
 
-//Just to test if file is successfully opened
-int CountLines(ifstream &in){
+Grid<char> SetInitialDish (ifstream &in){
+
+    Grid <char> InitialDish;
+
+    string temp;
+    int a;
+    int b;
+    getline(in, temp);
+    a = stringToInteger(temp);
+    getline(in, temp);
+    b = stringToInteger(temp);
+    cout << "row = " << a << endl << "column = " << b << endl;
+    InitialDish.resize(a, b);
 
     int count = 0;
-    while(true){
 
+    while(true){
         string line;
         getline(in, line);
 
+        for (int i = 0; i < line.length(); i++){
+            char ch;
+            ch = line[i];
+            InitialDish.set(count, i, ch);
+        }
+        count++;
 
         if (in.fail()){
-           break;
+            break;
         }
 
-        count++;
+        if (count >= InitialDish.numRows()){
+            break;
+        }
     }
-    return count;
+
+    in.clear();  //Do I need to clear the getline function?
+    in.close();
+
+    if (!in.is_open()){
+
+        cout << "Done reading file. File has been closed." << endl;
+    }
+
+    return InitialDish;
+}
+
+
+void SetPattern(Grid <char> &InitialDish){
+
+    Grid <char> TempGrid;
+    TempGrid.resize(5,5); //Replace with a, b
+
+    //0 or 1 neighbors
+
+    for (int row = 0; row < InitialDish.numRows(); row ++){
+        for (int col = 0; col < InitialDish.numCols(); col ++){
+
+            for (int r = 0; r < 3; r++){
+
+                for (int c = 0; c < 3; c++){
+
+                    int NumOfNeighbors = 0;
+
+                    if (InitialDish[row + (r-1)][col + (c-1)] == 'X'){
+
+                        NumOfNeighbors ++;
+                        NumOfNeighbors -= 1;
+                    }
+                    if (NumOfNeighbors = 1 || 2){
+                        //Zero or one neighbors, empty in the next generation
+                        TempGrid.set(row, col, '-');
+
+                    }
+
+                    if (NumOfNeighbors = 3){
+                        //Two neighbors, stable
+                        if (InitialDish[row][col] == '-'){
+                            TempGrid.set(row, col, '-');
+                        }
+                        if (InitialDish[row][col] == 'X'){
+
+                            TempGrid.set(row, col, 'X');
+                        }
+                    }
+
+                    if (NumOfNeighbors = 4){
+                        TempGrid.set(row, col, 'X');
+                    }
+
+                    if (NumOfNeighbors > 4){
+                        TempGrid.set(row, col, '-');
+                    }
+
+
+
+
+
+                }
+            }
+        }
+
+    }
 
 }
-/////////////////////////////////////////////
-
-
-void SetInitialDish(ifstream &in){     //Why can't I pass in a Grid as a parameter?
-
-    Grid <char> EmptyDish;
-
-
-}
-
-/////這邊加了一行
