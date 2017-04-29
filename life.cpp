@@ -24,13 +24,8 @@ int main() {
 
     ifstream in;
 
-    string s = getLine("Enter initial file name: ");
+    string s = getLine("Grid input file name? ");
     in.open(s);
-
-    if (in.is_open()){
-
-        cout << "The file has successfully been opened." << endl;
-    }
 
     if (in.fail()){
 
@@ -40,14 +35,53 @@ int main() {
     //Set up initial dish
     Grid <char> InitialDish;
 
+    InitialDish = SetInitialDish(in, InitialDish);
     //Print the grid in a prettier way
 
-    cout << SetInitialDish(in,  InitialDish) << endl;
+    for (int RowOfInitialDish = 0; RowOfInitialDish < InitialDish.numRows(); RowOfInitialDish ++){
 
-    //Define how the pattern according to which it moves
-    SetPattern(InitialDish);
+        for (int ColOfInitialDish = 0; ColOfInitialDish < InitialDish.numCols(); ColOfInitialDish ++){
 
+            if (InitialDish[RowOfInitialDish][ColOfInitialDish] == 'X'){
+                cout << InitialDish[RowOfInitialDish][ColOfInitialDish];
+            } else {
+                cout << InitialDish[RowOfInitialDish][ColOfInitialDish] << ' ';
+            }
+
+        }
+        cout << endl;
+
+    }
+
+    while (true){
+
+        string s2 = getLine("a)nimate, t)ick, q)uit? ");
+
+        if (s2 == "q"){
+
+            break;
+
+        } else if (s2 == "t"){
+
+            SetPattern(InitialDish);
+
+        } else if (s2 == "a") {
+
+            string frames = getLine("How many frames? ");
+            int Frames = stringToInteger(frames);
+
+            for (int count = 0; count <= Frames; count ++){
+
+                clearConsole();
+                SetPattern(InitialDish);
+                pause(50);
+
+            }
+        }
+
+    }
     return 0;
+
 }
 
 Grid<char> SetInitialDish (ifstream &in, Grid <char> &InitialDish){
@@ -61,7 +95,7 @@ Grid<char> SetInitialDish (ifstream &in, Grid <char> &InitialDish){
     a = stringToInteger(temp);
     getline(in, temp);
     b = stringToInteger(temp);
-    cout << "row = " << a << endl << "column = " << b << endl;
+
     InitialDish.resize(a, b);
 
     int count = 0;
@@ -89,11 +123,6 @@ Grid<char> SetInitialDish (ifstream &in, Grid <char> &InitialDish){
     in.clear();  //Do I need to clear the getline function?
     in.close();
 
-    if (!in.is_open()){
-
-        cout << "Done reading file. File has been closed." << endl;
-    }
-
     return InitialDish;
 }
 
@@ -103,12 +132,9 @@ void SetPattern(Grid <char> &InitialDish){
     Grid <char> TempGrid;
     TempGrid.resize(InitialDish.numRows(), InitialDish.numCols());
 
-    //0 or 1 neighbors
+    for (int row = 0; row < (InitialDish.numRows()); row ++){
+        for (int col = 0; col < (InitialDish.numCols()); col ++){
 
-    for (int row = 0; row < (InitialDish.numRows() - 1); row ++){
-        for (int col = 0; col < (InitialDish.numCols() - 1); col ++){
-
-            //這裡有問題，為什麼有兩個 NumOfNeighbors
             int NumOfNeighbors;
 
             if (InitialDish[row][col] == 'X'){
@@ -122,9 +148,6 @@ void SetPattern(Grid <char> &InitialDish){
 
                 for (int c = -1; c < 2; c++){
 
-                    //Check Boundary
-                    //if (InitialDish.inBounds((row + r), (col + c))){
-
                     if (InitialDish.inBounds((row + r), (col + c)) &&
                             InitialDish[row +r][col + c] == 'X'){
 
@@ -133,7 +156,6 @@ void SetPattern(Grid <char> &InitialDish){
                 }
             }
 
-            //Insert here
             if (NumOfNeighbors == 0 || NumOfNeighbors == 1){
                 //Zero or one neighbors, empty in the next generation
                 TempGrid.set(row, col, '-');
@@ -158,10 +180,25 @@ void SetPattern(Grid <char> &InitialDish){
                 TempGrid.set(row, col, '-');
             }
         }
-        // }
+
     }
 
 
     InitialDish =TempGrid;
+
+    for (int RowOfInitialDish = 0; RowOfInitialDish < InitialDish.numRows(); RowOfInitialDish ++){
+
+        for (int ColOfInitialDish = 0; ColOfInitialDish < InitialDish.numCols(); ColOfInitialDish ++){
+
+            if (InitialDish[RowOfInitialDish][ColOfInitialDish] == 'X'){
+                cout << InitialDish[RowOfInitialDish][ColOfInitialDish];
+            } else {
+                cout << InitialDish[RowOfInitialDish][ColOfInitialDish] << ' ';
+            }
+
+        }
+        cout << endl;
+
+    }
 
 }
