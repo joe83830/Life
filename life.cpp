@@ -24,14 +24,19 @@ int main() {
 
     ifstream in;
 
-    string s = getLine("Grid input file name? ");
-    in.open(s);
 
-    if (in.fail()){
+    while (true){
+        string s = getLine("Grid input file name? ");
+        in.open(s);
 
-        cerr << "Failed to open file";
+        if (in.is_open()){
+            break;
+        }
+        if (in.fail()){
+
+            cout << "Unable to open that file.  Try again." << endl;
+        }
     }
-
     //Set up initial dish
     Grid <char> InitialDish;
 
@@ -45,7 +50,7 @@ int main() {
             if (InitialDish[RowOfInitialDish][ColOfInitialDish] == 'X'){
                 cout << InitialDish[RowOfInitialDish][ColOfInitialDish];
             } else {
-                cout << InitialDish[RowOfInitialDish][ColOfInitialDish] << ' ';
+                cout << InitialDish[RowOfInitialDish][ColOfInitialDish];
             }
 
         }
@@ -59,6 +64,7 @@ int main() {
 
         if (s2 == "q"){
 
+            cout << "Have a nice Life!";
             break;
 
         } else if (s2 == "t"){
@@ -67,9 +73,19 @@ int main() {
 
         } else if (s2 == "a") {
 
-            string frames = getLine("How many frames? ");
-            int Frames = stringToInteger(frames);
+            string frames;
 
+            while (true){
+
+                frames = getLine("How many frames? ");
+
+                if (stringIsInteger(frames)){
+                    break;
+                }
+                cout << "Illegal integer format. Try again." << endl;
+            }
+
+            int Frames = stringToInteger(frames);
             for (int count = 0; count <= Frames; count ++){
 
                 clearConsole();
@@ -77,6 +93,9 @@ int main() {
                 pause(50);
 
             }
+
+        } else {
+            cout << "Invalid choice; please try again." << endl;
         }
 
     }
@@ -193,7 +212,7 @@ void SetPattern(Grid <char> &InitialDish){
             if (InitialDish[RowOfInitialDish][ColOfInitialDish] == 'X'){
                 cout << InitialDish[RowOfInitialDish][ColOfInitialDish];
             } else {
-                cout << InitialDish[RowOfInitialDish][ColOfInitialDish] << ' ';
+                cout << InitialDish[RowOfInitialDish][ColOfInitialDish];
             }
 
         }
